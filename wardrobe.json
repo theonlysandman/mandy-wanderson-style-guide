@@ -1,0 +1,317 @@
+{
+  "top": [
+    {
+      "name": "White Oxford Shirt",
+      "color": "#f8f8f0",
+      "text": "#333",
+      "icon": "\ud83d\udc54",
+      "tags": [
+        "work",
+        "casual"
+      ],
+      "seasons": [
+        "spring",
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Navy Crewneck Sweater",
+      "color": "#1b3a5c",
+      "text": "#fff",
+      "icon": "\ud83e\uddf6",
+      "tags": [
+        "work",
+        "casual"
+      ],
+      "seasons": [
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Grey Henley",
+      "color": "#888",
+      "text": "#fff",
+      "icon": "\ud83d\udc55",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "spring",
+        "fall"
+      ]
+    },
+    {
+      "name": "Black Turtleneck",
+      "color": "#1a1a1a",
+      "text": "#fff",
+      "icon": "\ud83d\udda4",
+      "tags": [
+        "work",
+        "formal"
+      ],
+      "seasons": [
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Olive Flannel",
+      "color": "#556b2f",
+      "text": "#fff",
+      "icon": "\ud83c\udf32",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Light Blue Linen Shirt",
+      "color": "#add8e6",
+      "text": "#333",
+      "icon": "\ud83c\udf0a",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "spring",
+        "summer"
+      ]
+    },
+    {
+      "name": "Burgundy Polo",
+      "color": "#722f37",
+      "text": "#fff",
+      "icon": "\ud83d\udc55",
+      "tags": [
+        "casual",
+        "work"
+      ],
+      "seasons": [
+        "spring",
+        "summer"
+      ]
+    },
+    {
+      "name": "Dr Who",
+      "color": "#4a90d9",
+      "text": "#333",
+      "icon": "\ud83d\udc55",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "spring",
+        "summer"
+      ],
+      "photo": "uploads/12d7e4ca29.jpg"
+    }
+  ],
+  "bottom": [
+    {
+      "name": "Dark Indigo Jeans",
+      "color": "#1c2841",
+      "text": "#fff",
+      "icon": "\ud83d\udc56",
+      "tags": [
+        "casual",
+        "work"
+      ],
+      "seasons": [
+        "spring",
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Khaki Chinos",
+      "color": "#c3a66a",
+      "text": "#333",
+      "icon": "\ud83d\udc56",
+      "tags": [
+        "work",
+        "casual"
+      ],
+      "seasons": [
+        "spring",
+        "fall"
+      ]
+    },
+    {
+      "name": "Black Trousers",
+      "color": "#1a1a1a",
+      "text": "#fff",
+      "icon": "\ud83d\udc56",
+      "tags": [
+        "work",
+        "formal"
+      ],
+      "seasons": [
+        "spring",
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Olive Cargos",
+      "color": "#4a5d3a",
+      "text": "#fff",
+      "icon": "\ud83e\ude73",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "spring",
+        "fall"
+      ]
+    },
+    {
+      "name": "Grey Wool Pants",
+      "color": "#6e6e6e",
+      "text": "#fff",
+      "icon": "\ud83d\udc56",
+      "tags": [
+        "work",
+        "formal"
+      ],
+      "seasons": [
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Navy Shorts",
+      "color": "#1b3a5c",
+      "text": "#fff",
+      "icon": "\ud83e\ude73",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "summer"
+      ]
+    }
+  ],
+  "shoes": [
+    {
+      "name": "White Sneakers",
+      "color": "#f0f0f0",
+      "text": "#333",
+      "icon": "\ud83d\udc5f",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "spring",
+        "summer",
+        "fall"
+      ]
+    },
+    {
+      "name": "Brown Leather Boots",
+      "color": "#6b3e26",
+      "text": "#fff",
+      "icon": "\ud83e\udd7e",
+      "tags": [
+        "casual",
+        "work"
+      ],
+      "seasons": [
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Black Dress Shoes",
+      "color": "#111",
+      "text": "#fff",
+      "icon": "\ud83d\udc5e",
+      "tags": [
+        "work",
+        "formal"
+      ],
+      "seasons": [
+        "spring",
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Grey Running Shoes",
+      "color": "#888",
+      "text": "#fff",
+      "icon": "\ud83d\udc5f",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "spring",
+        "summer",
+        "fall"
+      ]
+    }
+  ],
+  "outer": [
+    {
+      "name": "Camel Overcoat",
+      "color": "#c4a35a",
+      "text": "#333",
+      "icon": "\ud83e\udde5",
+      "tags": [
+        "work",
+        "formal"
+      ],
+      "seasons": [
+        "fall",
+        "winter"
+      ]
+    },
+    {
+      "name": "Black Bomber Jacket",
+      "color": "#1a1a1a",
+      "text": "#fff",
+      "icon": "\ud83e\udde5",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "spring",
+        "fall"
+      ]
+    },
+    {
+      "name": "Navy Puffer",
+      "color": "#1b3a5c",
+      "text": "#fff",
+      "icon": "\ud83e\udde5",
+      "tags": [
+        "casual"
+      ],
+      "seasons": [
+        "winter"
+      ]
+    },
+    {
+      "name": "None",
+      "color": "#e8e8e8",
+      "text": "#999",
+      "icon": "\u2014",
+      "tags": [
+        "casual",
+        "work",
+        "formal"
+      ],
+      "seasons": [
+        "spring",
+        "summer",
+        "fall",
+        "winter"
+      ]
+    }
+  ],
+  "face": "uploads/face.png"
+}

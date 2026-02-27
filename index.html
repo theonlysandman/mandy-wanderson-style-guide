@@ -29,7 +29,7 @@
     letter-spacing: 1px; color: #888; text-align: right;
   }
   .item-display {
-    flex: 1; height: 72px; border-radius: 10px; display: flex;
+    flex: 1; border-radius: 10px; display: flex;
     align-items: center; justify-content: center; gap: .6rem;
     font-size: .85rem; font-weight: 500; cursor: pointer; transition: transform .15s, box-shadow .15s;
     border: 2px solid transparent; position: relative;
@@ -38,6 +38,12 @@
   .item-display.active { border-color: #e94560; }
   .item-display .icon { font-size: 1.8rem; }
   .item-display .name { font-size: .85rem; }
+
+  /* Category-specific shapes */
+  .slot-outer .item-display  { height: 56px; border-radius: 10px 10px 6px 6px; }
+  .slot-top .item-display     { height: 90px; border-radius: 8px; }
+  .slot-bottom .item-display  { height: 120px; border-radius: 6px 6px 8px 8px; }
+  .slot-shoes .item-display   { height: 54px; border-radius: 12px; }
 
   /* Nav arrows */
   .nav-arrows { display: flex; flex-direction: column; gap: .3rem; flex-shrink: 0; }
@@ -56,14 +62,8 @@
   }
   .shuffle-bar button:hover { background: #c73650; }
 
-  /* Purchase suggestion */
-  .suggestion-box {
-    background: linear-gradient(135deg, #1a1a2e, #16213e); color: #fff;
-    border-radius: 12px; padding: 1.5rem; margin-top: 2rem;
-  }
-  .suggestion-box h3 { margin-bottom: .6rem; font-size: 1rem; }
-  .suggestion-box p { font-size: .85rem; opacity: .85; line-height: 1.5; }
-  .suggestion-box .tip { margin-top: .8rem; padding: .6rem; background: rgba(255,255,255,.1); border-radius: 8px; font-size: .8rem; }
+  /* Purchase suggestion – hidden */
+  .suggestion-box { display: none; }
 
   /* Add button */
   .add-btn {
@@ -474,7 +474,7 @@ render = function() {
   slots.forEach(slot => {
     const item = slot.list[idx[slot.key]];
     const div = document.createElement('div');
-    div.className = 'outfit-slot';
+    div.className = 'outfit-slot slot-' + slot.key;
 
     let innerContent;
     if (item.photo) {
