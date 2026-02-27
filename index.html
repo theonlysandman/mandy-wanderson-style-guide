@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Style Agent – Outfit Picker</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f0; color: #222; min-height: 100vh; }
+  header { background: #1a1a2e; color: #fff; padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: .5px; }
+  #weather { font-size: .85rem; opacity: .8; }
+
+  .main { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+  .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+
+  /* Outfit card */
+  .outfit-card {
+    background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    padding: 1.5rem; margin-bottom: 1.5rem;
+    display: flex; flex-direction: column; gap: .6rem;
+  }
+  #outfit { display: flex; flex-direction: column; gap: .6rem; }
+  .outfit-slot {
+    display: flex; align-items: center; gap: 1rem; position: relative;
+  }
+  .outfit-slot label {
+    width: 90px; flex-shrink: 0; font-size: .75rem; text-transform: uppercase;
+    letter-spacing: 1px; color: #888; text-align: right;
+  }
+  .item-display {
+    flex: 1; height: 72px; border-radius: 10px; display: flex;
+    align-items: center; justify-content: center; gap: .6rem;
+    font-size: .85rem; font-weight: 500; cursor: pointer; transition: transform .15s, box-shadow .15s;
+    border: 2px solid transparent; position: relative;
+  }
+  .item-display:hover { transform: scale(1.02); box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+  .item-display.active { border-color: #e94560; }
+  .item-display .icon { font-size: 1.8rem; }
+  .item-display .name { font-size: .85rem; }
+
+  /* Nav arrows */
+  .nav-arrows { display: flex; flex-direction: column; gap: .3rem; flex-shrink: 0; }
+  .nav-arrows button {
+    width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd;
+    background: #fff; cursor: pointer; font-size: .9rem; display: flex;
+    align-items: center; justify-content: center; transition: background .15s;
+  }
+  .nav-arrows button:hover { background: #e94560; color: #fff; border-color: #e94560; }
+
+  /* Shuffle button */
+  .shuffle-bar { text-align: center; margin-bottom: 2rem; }
+  .shuffle-bar button {
+    padding: .6rem 1.8rem; border: none; border-radius: 8px; background: #e94560;
+    color: #fff; font-size: .95rem; font-weight: 600; cursor: pointer; transition: background .15s;
+  }
+  .shuffle-bar button:hover { background: #c73650; }
+
+  /* Purchase suggestion */
+  .suggestion-box {
+    background: linear-gradient(135deg, #1a1a2e, #16213e); color: #fff;
+    border-radius: 12px; padding: 1.5rem; margin-top: 2rem;
+  }
+  .suggestion-box h3 { margin-bottom: .6rem; font-size: 1rem; }
+  .suggestion-box p { font-size: .85rem; opacity: .85; line-height: 1.5; }
+  .suggestion-box .tip { margin-top: .8rem; padding: .6rem; background: rgba(255,255,255,.1); border-radius: 8px; font-size: .8rem; }
+
+  /* Add button */
+  .add-btn {
+    padding: .5rem 1.2rem; border: none; border-radius: 8px; background: #16213e;
+    color: #fff; font-size: .85rem; font-weight: 600; cursor: pointer; transition: background .15s;
+  }
+  .add-btn:hover { background: #0f3460; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5);
+    z-index: 100; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 14px; padding: 1.8rem; width: 420px; max-width: 92vw;
+    max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,.25);
+  }
+  .modal h2 { font-size: 1.1rem; margin-bottom: 1.2rem; }
+  .modal .field { margin-bottom: 1rem; }
+  .modal .field label { display: block; font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: #666; margin-bottom: .3rem; }
+  .modal .field input, .modal .field select { width: 100%; padding: .5rem .7rem; border: 1px solid #ddd; border-radius: 8px; font-size: .9rem; }
+  .modal .field select { cursor: pointer; }
+  .modal .field input[type="color"] { height: 38px; padding: 2px; cursor: pointer; }
+  .modal .field input[type="file"] { padding: .4rem; font-size: .8rem; }
+  .modal .check-group { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin-top: .2rem; }
+  .modal .check-group label { font-size: .82rem; font-weight: 400; text-transform: none; letter-spacing: 0; color: #333; display: flex; align-items: center; gap: .3rem; cursor: pointer; }
+  .photo-preview { width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-top: .5rem; display: none; }
+  .modal-actions { display: flex; gap: .6rem; justify-content: flex-end; margin-top: 1.2rem; }
+  .modal-actions button {
+    padding: .5rem 1.4rem; border: none; border-radius: 8px; font-size: .9rem;
+    font-weight: 600; cursor: pointer; transition: background .15s;
+  }
+  .btn-cancel { background: #eee; color: #333; }
+  .btn-cancel:hover { background: #ddd; }
+  .btn-save { background: #e94560; color: #fff; }
+  .btn-save:hover { background: #c73650; }
+
+  /* Avatar / Face upload */
+  .avatar-row {
+    display: flex; flex-direction: column; align-items: center; padding-bottom: .8rem;
+    border-bottom: 1px solid #eee; margin-bottom: .2rem;
+    margin-left: calc(90px + 1rem); /* offset past the label column */
+    margin-right: calc(30px + 1rem); /* offset past the arrow column */
+  }
+  .avatar-circle {
+    width: 80px; height: 80px; border-radius: 50%; border: 2px dashed #ccc;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; overflow: hidden; transition: border-color .2s, transform .15s;
+    background: #f5f5f0; flex-shrink: 0;
+  }
+  .avatar-circle:hover { border-color: #e94560; transform: scale(1.05); }
+  .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+  .avatar-circle .placeholder { font-size: 1.6rem; color: #bbb; }
+  .avatar-hint { font-size: .72rem; color: #aaa; margin-top: .3rem; }
+
+  @media (max-width: 600px) {
+    .outfit-slot { flex-wrap: wrap; }
+    .outfit-slot label { width: 100%; text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>👔 Style Agent</h1>
+  <div style="display:flex;align-items:center;gap:1rem">
+    <button class="add-btn" onclick="openModal()">＋ Add Clothing</button>
+    <div id="weather">Feb 27 · 42°F · Partly Cloudy</div>
+  </div>
+</header>
+
+<!-- Add Clothing Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <h2>➕ Add a Clothing Item</h2>
+
+    <div class="field">
+      <label>Photo (optional)</label>
+      <input type="file" id="itemPhoto" accept="image/*" onchange="previewPhoto(this)">
+      <img class="photo-preview" id="photoPreview">
+    </div>
+
+    <div class="field">
+      <label>Name</label>
+      <input type="text" id="itemName" placeholder="e.g. Blue Denim Jacket">
+    </div>
+
+    <div class="field">
+      <label>Category</label>
+      <select id="itemCategory">
+        <option value="top">Top</option>
+        <option value="bottom">Bottom</option>
+        <option value="shoes">Shoes</option>
+        <option value="outer">Outerwear</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Color</label>
+      <input type="color" id="itemColor" value="#4a90d9">
+    </div>
+
+    <div class="field">
+      <label>Occasions</label>
+      <div class="check-group">
+        <label><input type="checkbox" value="casual" checked> Casual</label>
+        <label><input type="checkbox" value="work"> Work</label>
+        <label><input type="checkbox" value="formal"> Formal</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Seasons</label>
+      <div class="check-group" id="seasonChecks">
+        <label><input type="checkbox" value="spring" checked> Spring</label>
+        <label><input type="checkbox" value="summer"> Summer</label>
+        <label><input type="checkbox" value="fall" checked> Fall</label>
+        <label><input type="checkbox" value="winter"> Winter</label>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveItem()">Add to Wardrobe</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="faceUpload" accept="image/*" style="display:none" onchange="handleFaceUpload(this)">
+
+<div class="main">
+  <p class="section-title">Today's Outfit</p>
+  <div class="outfit-card">
+    <div class="avatar-row">
+      <div class="avatar-circle" onclick="document.getElementById('faceUpload').click()" id="avatarCircle">
+        <span class="placeholder">🙂</span>
+      </div>
+      <span class="avatar-hint">Click to upload your face</span>
+    </div>
+    <div id="outfit"></div>
+  </div>
+
+  <div class="shuffle-bar">
+    <button onclick="shuffleAll()">🎲 Shuffle Everything</button>
+  </div>
+
+  <div class="suggestion-box" id="suggestion"></div>
+</div>
+
+<script>
+// ---- WARDROBE DATA ----
+const tops = [
+  { name: 'White Oxford Shirt',   color: '#f8f8f0', text: '#333', icon: '👔', tags: ['work','casual'], seasons: ['spring','fall','winter'] },
+  { name: 'Navy Crewneck Sweater',color: '#1b3a5c', text: '#fff', icon: '🧶', tags: ['work','casual'], seasons: ['fall','winter'] },
+  { name: 'Grey Henley',          color: '#888',    text: '#fff', icon: '👕', tags: ['casual'],        seasons: ['spring','fall'] },
+  { name: 'Black Turtleneck',     color: '#1a1a1a', text: '#fff', icon: '🖤', tags: ['work','formal'], seasons: ['fall','winter'] },
+  { name: 'Olive Flannel',        color: '#556b2f', text: '#fff', icon: '🌲', tags: ['casual'],        seasons: ['fall','winter'] },
+  { name: 'Light Blue Linen Shirt',color:'#add8e6', text: '#333', icon: '🌊', tags: ['casual'],        seasons: ['spring','summer'] },
+  { name: 'Burgundy Polo',        color: '#722f37', text: '#fff', icon: '👕', tags: ['casual','work'], seasons: ['spring','summer'] },
+];
+
+const bottoms = [
+  { name: 'Dark Indigo Jeans',    color: '#1c2841', text: '#fff', icon: '👖', tags: ['casual','work'], seasons: ['spring','fall','winter'] },
+  { name: 'Khaki Chinos',         color: '#c3a66a', text: '#333', icon: '👖', tags: ['work','casual'], seasons: ['spring','fall'] },
+  { name: 'Black Trousers',       color: '#1a1a1a', text: '#fff', icon: '👖', tags: ['work','formal'], seasons: ['spring','fall','winter'] },
+  { name: 'Olive Cargos',         color: '#4a5d3a', text: '#fff', icon: '🩳', tags: ['casual'],        seasons: ['spring','fall'] },
+  { name: 'Grey Wool Pants',      color: '#6e6e6e', text: '#fff', icon: '👖', tags: ['work','formal'], seasons: ['fall','winter'] },
+  { name: 'Navy Shorts',          color: '#1b3a5c', text: '#fff', icon: '🩳', tags: ['casual'],        seasons: ['summer'] },
+];
+
+const shoes = [
+  { name: 'White Sneakers',       color: '#f0f0f0', text: '#333', icon: '👟', tags: ['casual'],        seasons: ['spring','summer','fall'] },
+  { name: 'Brown Leather Boots',  color: '#6b3e26', text: '#fff', icon: '🥾', tags: ['casual','work'], seasons: ['fall','winter'] },
+  { name: 'Black Dress Shoes',    color: '#111',    text: '#fff', icon: '👞', tags: ['work','formal'], seasons: ['spring','fall','winter'] },
+  { name: 'Grey Running Shoes',   color: '#888',    text: '#fff', icon: '👟', tags: ['casual'],        seasons: ['spring','summer','fall'] },
+];
+
+const outerwear = [
+  { name: 'Camel Overcoat',       color: '#c4a35a', text: '#333', icon: '🧥', tags: ['work','formal'], seasons: ['fall','winter'] },
+  { name: 'Black Bomber Jacket',  color: '#1a1a1a', text: '#fff', icon: '🧥', tags: ['casual'],        seasons: ['spring','fall'] },
+  { name: 'Navy Puffer',          color: '#1b3a5c', text: '#fff', icon: '🧥', tags: ['casual'],        seasons: ['winter'] },
+  { name: 'None',                 color: '#e8e8e8', text: '#999', icon: '—',  tags: ['casual','work','formal'], seasons: ['spring','summer','fall','winter'] },
+];
+
+// ---- STATE ----
+let idx = { top: 0, bottom: 0, shoes: 0, outer: 3 };
+
+const lists = { top: tops, bottom: bottoms, shoes: shoes, outer: outerwear };
+
+function render() {
+  const card = document.getElementById('outfit');
+  card.innerHTML = '';
+
+  const slots = [
+    { key: 'outer', label: 'Outerwear', list: outerwear },
+    { key: 'top',   label: 'Top',       list: tops },
+    { key: 'bottom',label: 'Bottom',    list: bottoms },
+    { key: 'shoes', label: 'Shoes',     list: shoes },
+  ];
+
+  slots.forEach(slot => {
+    const item = slot.list[idx[slot.key]];
+    const div = document.createElement('div');
+    div.className = 'outfit-slot';
+    div.innerHTML = `
+      <label>${slot.label}</label>
+      <div class="item-display" style="background:${item.color}; color:${item.text}">
+        <span class="icon">${item.icon}</span>
+        <span class="name">${item.name}</span>
+      </div>
+      <div class="nav-arrows">
+        <button onclick="prev('${slot.key}')" title="Previous">◀</button>
+        <button onclick="next('${slot.key}')" title="Next">▶</button>
+      </div>
+    `;
+    card.appendChild(div);
+  });
+
+  updateSuggestion();
+}
+
+function next(key) {
+  const list = lists[key];
+  idx[key] = (idx[key] + 1) % list.length;
+  render();
+}
+function prev(key) {
+  const list = lists[key];
+  idx[key] = (idx[key] - 1 + list.length) % list.length;
+  render();
+}
+function shuffleAll() {
+  Object.keys(lists).forEach(key => {
+    idx[key] = Math.floor(Math.random() * lists[key].length);
+  });
+  render();
+}
+
+function updateSuggestion() {
+  const top = tops[idx.top];
+  const bot = bottoms[idx.bottom];
+  const sh  = shoes[idx.shoes];
+
+  // Simple gap analysis
+  const allItems = [...tops, ...bottoms, ...shoes, ...outerwear];
+  const seasonCounts = { spring: 0, summer: 0, fall: 0, winter: 0 };
+  allItems.forEach(i => i.seasons.forEach(s => seasonCounts[s]++));
+  const weakest = Object.entries(seasonCounts).sort((a,b) => a[1]-b[1])[0];
+
+  const tips = [
+    `Your weakest season is <strong>${weakest[0]}</strong> (${weakest[1]} items). Consider adding more ${weakest[0]} pieces.`,
+    `You have <strong>${tops.length} tops</strong>, <strong>${bottoms.length} bottoms</strong>, and <strong>${shoes.length} shoes</strong> — that's roughly <strong>${tops.length * bottoms.length * shoes.length}</strong> possible combinations.`,
+  ];
+
+  const colorTip = (top.color === bot.color && top.color !== '#f8f8f0')
+    ? `⚠️ Top and bottom are very similar colors — try more contrast.`
+    : `✅ Good color contrast between top and bottom.`;
+
+  document.getElementById('suggestion').innerHTML = `
+    <h3>💡 Purchase Advisor</h3>
+    <p>${tips[0]}</p>
+    <p style="margin-top:.4rem">${tips[1]}</p>
+    <div class="tip">${colorTip}</div>
+  `;
+}
+
+// ---- FACE UPLOAD ----
+function handleFaceUpload(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const circle = document.getElementById('avatarCircle');
+      circle.innerHTML = `<img src="${e.target.result}" alt="Your face">`;
+      document.querySelector('.avatar-hint').textContent = 'Click to change';
+      // Persist in localStorage
+      localStorage.setItem('styleAgentFace', e.target.result);
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+// Restore saved face on load
+(function() {
+  const saved = localStorage.getItem('styleAgentFace');
+  if (saved) {
+    const circle = document.getElementById('avatarCircle');
+    circle.innerHTML = `<img src="${saved}" alt="Your face">`;
+    document.querySelector('.avatar-hint').textContent = 'Click to change';
+  }
+})();
+
+// ---- MODAL / ADD ITEM ----
+function openModal() {
+  document.getElementById('addModal').classList.add('open');
+  document.getElementById('itemName').value = '';
+  document.getElementById('itemPhoto').value = '';
+  document.getElementById('photoPreview').style.display = 'none';
+}
+function closeModal() {
+  document.getElementById('addModal').classList.remove('open');
+}
+
+function previewPhoto(input) {
+  const preview = document.getElementById('photoPreview');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function getChecked(container) {
+  return [...container.querySelectorAll('input[type=checkbox]:checked')].map(cb => cb.value);
+}
+
+const categoryIcons = { top: '👕', bottom: '👖', shoes: '👟', outer: '🧥' };
+
+function luminance(hex) {
+  const r = parseInt(hex.substr(1,2),16)/255;
+  const g = parseInt(hex.substr(3,2),16)/255;
+  const b = parseInt(hex.substr(5,2),16)/255;
+  return 0.299*r + 0.587*g + 0.114*b;
+}
+
+function saveItem() {
+  const name = document.getElementById('itemName').value.trim();
+  if (!name) { alert('Please enter a name'); return; }
+
+  const category = document.getElementById('itemCategory').value;
+  const color = document.getElementById('itemColor').value;
+  const textColor = luminance(color) > 0.5 ? '#333' : '#fff';
+  const tags = getChecked(document.querySelector('.check-group'));
+  const seasons = getChecked(document.getElementById('seasonChecks'));
+
+  // Check for photo
+  const preview = document.getElementById('photoPreview');
+  const photoData = preview.style.display !== 'none' ? preview.src : null;
+
+  const item = { name, color, text: textColor, icon: categoryIcons[category], tags, seasons, photo: photoData };
+
+  lists[category].push(item);
+  idx[category] = lists[category].length - 1; // jump to new item
+
+  closeModal();
+  render();
+}
+
+// ---- RENDER WITH PHOTO SUPPORT ----
+const _origRender = render;
+render = function() {
+  const card = document.getElementById('outfit');
+  card.innerHTML = '';
+
+  const slots = [
+    { key: 'outer', label: 'Outerwear', list: outerwear },
+    { key: 'top',   label: 'Top',       list: tops },
+    { key: 'bottom',label: 'Bottom',    list: bottoms },
+    { key: 'shoes', label: 'Shoes',     list: shoes },
+  ];
+
+  slots.forEach(slot => {
+    const item = slot.list[idx[slot.key]];
+    const div = document.createElement('div');
+    div.className = 'outfit-slot';
+
+    let innerContent;
+    if (item.photo) {
+      innerContent = `
+        <div class="item-display" style="background:url(${item.photo}) center/cover; color:${item.text}; position:relative;">
+          <span class="name" style="background:rgba(0,0,0,.55);color:#fff;padding:2px 8px;border-radius:6px;font-size:.75rem;">${item.name}</span>
+        </div>`;
+    } else {
+      innerContent = `
+        <div class="item-display" style="background:${item.color}; color:${item.text}">
+          <span class="icon">${item.icon}</span>
+          <span class="name">${item.name}</span>
+        </div>`;
+    }
+
+    div.innerHTML = `
+      <label>${slot.label}</label>
+      ${innerContent}
+      <div class="nav-arrows">
+        <button onclick="prev('${slot.key}')" title="Previous">◀</button>
+        <button onclick="next('${slot.key}')" title="Next">▶</button>
+      </div>
+    `;
+    card.appendChild(div);
+  });
+
+  updateSuggestion();
+};
+
+// Init
+render();
+</script>
+</body>
+</html>
