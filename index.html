@@ -215,44 +215,89 @@
 </div>
 
 <script>
-// ---- WARDROBE DATA ----
-const tops = [
-  { name: 'White Oxford Shirt',   color: '#f8f8f0', text: '#333', icon: '👔', tags: ['work','casual'], seasons: ['spring','fall','winter'] },
-  { name: 'Navy Crewneck Sweater',color: '#1b3a5c', text: '#fff', icon: '🧶', tags: ['work','casual'], seasons: ['fall','winter'] },
-  { name: 'Grey Henley',          color: '#888',    text: '#fff', icon: '👕', tags: ['casual'],        seasons: ['spring','fall'] },
-  { name: 'Black Turtleneck',     color: '#1a1a1a', text: '#fff', icon: '🖤', tags: ['work','formal'], seasons: ['fall','winter'] },
-  { name: 'Olive Flannel',        color: '#556b2f', text: '#fff', icon: '🌲', tags: ['casual'],        seasons: ['fall','winter'] },
-  { name: 'Light Blue Linen Shirt',color:'#add8e6', text: '#333', icon: '🌊', tags: ['casual'],        seasons: ['spring','summer'] },
-  { name: 'Burgundy Polo',        color: '#722f37', text: '#fff', icon: '👕', tags: ['casual','work'], seasons: ['spring','summer'] },
-];
+// ---- DEFAULT WARDROBE DATA ----
+const defaultWardrobe = {
+  top: [
+    { name: 'White Oxford Shirt',   color: '#f8f8f0', text: '#333', icon: '👔', tags: ['work','casual'], seasons: ['spring','fall','winter'] },
+    { name: 'Navy Crewneck Sweater',color: '#1b3a5c', text: '#fff', icon: '🧶', tags: ['work','casual'], seasons: ['fall','winter'] },
+    { name: 'Grey Henley',          color: '#888',    text: '#fff', icon: '👕', tags: ['casual'],        seasons: ['spring','fall'] },
+    { name: 'Black Turtleneck',     color: '#1a1a1a', text: '#fff', icon: '🖤', tags: ['work','formal'], seasons: ['fall','winter'] },
+    { name: 'Olive Flannel',        color: '#556b2f', text: '#fff', icon: '🌲', tags: ['casual'],        seasons: ['fall','winter'] },
+    { name: 'Light Blue Linen Shirt',color:'#add8e6', text: '#333', icon: '🌊', tags: ['casual'],        seasons: ['spring','summer'] },
+    { name: 'Burgundy Polo',        color: '#722f37', text: '#fff', icon: '👕', tags: ['casual','work'], seasons: ['spring','summer'] },
+  ],
+  bottom: [
+    { name: 'Dark Indigo Jeans',    color: '#1c2841', text: '#fff', icon: '👖', tags: ['casual','work'], seasons: ['spring','fall','winter'] },
+    { name: 'Khaki Chinos',         color: '#c3a66a', text: '#333', icon: '👖', tags: ['work','casual'], seasons: ['spring','fall'] },
+    { name: 'Black Trousers',       color: '#1a1a1a', text: '#fff', icon: '👖', tags: ['work','formal'], seasons: ['spring','fall','winter'] },
+    { name: 'Olive Cargos',         color: '#4a5d3a', text: '#fff', icon: '🩳', tags: ['casual'],        seasons: ['spring','fall'] },
+    { name: 'Grey Wool Pants',      color: '#6e6e6e', text: '#fff', icon: '👖', tags: ['work','formal'], seasons: ['fall','winter'] },
+    { name: 'Navy Shorts',          color: '#1b3a5c', text: '#fff', icon: '🩳', tags: ['casual'],        seasons: ['summer'] },
+  ],
+  shoes: [
+    { name: 'White Sneakers',       color: '#f0f0f0', text: '#333', icon: '👟', tags: ['casual'],        seasons: ['spring','summer','fall'] },
+    { name: 'Brown Leather Boots',  color: '#6b3e26', text: '#fff', icon: '🥾', tags: ['casual','work'], seasons: ['fall','winter'] },
+    { name: 'Black Dress Shoes',    color: '#111',    text: '#fff', icon: '👞', tags: ['work','formal'], seasons: ['spring','fall','winter'] },
+    { name: 'Grey Running Shoes',   color: '#888',    text: '#fff', icon: '👟', tags: ['casual'],        seasons: ['spring','summer','fall'] },
+  ],
+  outer: [
+    { name: 'Camel Overcoat',       color: '#c4a35a', text: '#333', icon: '🧥', tags: ['work','formal'], seasons: ['fall','winter'] },
+    { name: 'Black Bomber Jacket',  color: '#1a1a1a', text: '#fff', icon: '🧥', tags: ['casual'],        seasons: ['spring','fall'] },
+    { name: 'Navy Puffer',          color: '#1b3a5c', text: '#fff', icon: '🧥', tags: ['casual'],        seasons: ['winter'] },
+    { name: 'None',                 color: '#e8e8e8', text: '#999', icon: '—',  tags: ['casual','work','formal'], seasons: ['spring','summer','fall','winter'] },
+  ],
+  face: null,
+};
 
-const bottoms = [
-  { name: 'Dark Indigo Jeans',    color: '#1c2841', text: '#fff', icon: '👖', tags: ['casual','work'], seasons: ['spring','fall','winter'] },
-  { name: 'Khaki Chinos',         color: '#c3a66a', text: '#333', icon: '👖', tags: ['work','casual'], seasons: ['spring','fall'] },
-  { name: 'Black Trousers',       color: '#1a1a1a', text: '#fff', icon: '👖', tags: ['work','formal'], seasons: ['spring','fall','winter'] },
-  { name: 'Olive Cargos',         color: '#4a5d3a', text: '#fff', icon: '🩳', tags: ['casual'],        seasons: ['spring','fall'] },
-  { name: 'Grey Wool Pants',      color: '#6e6e6e', text: '#fff', icon: '👖', tags: ['work','formal'], seasons: ['fall','winter'] },
-  { name: 'Navy Shorts',          color: '#1b3a5c', text: '#fff', icon: '🩳', tags: ['casual'],        seasons: ['summer'] },
-];
-
-const shoes = [
-  { name: 'White Sneakers',       color: '#f0f0f0', text: '#333', icon: '👟', tags: ['casual'],        seasons: ['spring','summer','fall'] },
-  { name: 'Brown Leather Boots',  color: '#6b3e26', text: '#fff', icon: '🥾', tags: ['casual','work'], seasons: ['fall','winter'] },
-  { name: 'Black Dress Shoes',    color: '#111',    text: '#fff', icon: '👞', tags: ['work','formal'], seasons: ['spring','fall','winter'] },
-  { name: 'Grey Running Shoes',   color: '#888',    text: '#fff', icon: '👟', tags: ['casual'],        seasons: ['spring','summer','fall'] },
-];
-
-const outerwear = [
-  { name: 'Camel Overcoat',       color: '#c4a35a', text: '#333', icon: '🧥', tags: ['work','formal'], seasons: ['fall','winter'] },
-  { name: 'Black Bomber Jacket',  color: '#1a1a1a', text: '#fff', icon: '🧥', tags: ['casual'],        seasons: ['spring','fall'] },
-  { name: 'Navy Puffer',          color: '#1b3a5c', text: '#fff', icon: '🧥', tags: ['casual'],        seasons: ['winter'] },
-  { name: 'None',                 color: '#e8e8e8', text: '#999', icon: '—',  tags: ['casual','work','formal'], seasons: ['spring','summer','fall','winter'] },
-];
-
-// ---- STATE ----
+// ---- STATE (will be populated on load) ----
+let tops, bottoms, shoes, outerwear;
 let idx = { top: 0, bottom: 0, shoes: 0, outer: 3 };
+let lists = {};
 
-const lists = { top: tops, bottom: bottoms, shoes: shoes, outer: outerwear };
+// ---- PERSISTENCE HELPERS ----
+async function uploadFile(file, endpoint = '/api/upload') {
+  const fd = new FormData();
+  fd.append('file', file);
+  const res = await fetch(endpoint, { method: 'POST', body: fd });
+  const data = await res.json();
+  return data.path; // e.g. "uploads/abc123.jpg"
+}
+
+async function saveWardrobe() {
+  const data = { top: tops, bottom: bottoms, shoes: shoes, outer: outerwear, face: lists._face || null };
+  await fetch('/api/wardrobe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
+async function loadWardrobe() {
+  try {
+    const res = await fetch('/api/wardrobe');
+    const data = await res.json();
+    if (data && data.top) {
+      tops = data.top;
+      bottoms = data.bottom;
+      shoes = data.shoes;
+      outerwear = data.outer;
+      lists._face = data.face || null;
+    } else {
+      loadDefaults();
+    }
+  } catch(e) {
+    loadDefaults();
+  }
+  lists = { top: tops, bottom: bottoms, shoes: shoes, outer: outerwear };
+}
+
+function loadDefaults() {
+  tops = [...defaultWardrobe.top];
+  bottoms = [...defaultWardrobe.bottom];
+  shoes = [...defaultWardrobe.shoes];
+  outerwear = [...defaultWardrobe.outer];
+  lists._face = null;
+}
 
 function render() {
   const card = document.getElementById('outfit');
@@ -332,28 +377,23 @@ function updateSuggestion() {
 }
 
 // ---- FACE UPLOAD ----
-function handleFaceUpload(input) {
+async function handleFaceUpload(input) {
   if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const circle = document.getElementById('avatarCircle');
-      circle.innerHTML = `<img src="${e.target.result}" alt="Your face">`;
-      document.querySelector('.avatar-hint').textContent = 'Click to change';
-      // Persist in localStorage
-      localStorage.setItem('styleAgentFace', e.target.result);
-    };
-    reader.readAsDataURL(input.files[0]);
+    const path = await uploadFile(input.files[0], '/api/face');
+    const circle = document.getElementById('avatarCircle');
+    circle.innerHTML = `<img src="${path}?t=${Date.now()}" alt="Your face">`;
+    document.querySelector('.avatar-hint').textContent = 'Click to change';
+    lists._face = path;
+    await saveWardrobe();
   }
 }
-// Restore saved face on load
-(function() {
-  const saved = localStorage.getItem('styleAgentFace');
-  if (saved) {
+function restoreFace() {
+  if (lists._face) {
     const circle = document.getElementById('avatarCircle');
-    circle.innerHTML = `<img src="${saved}" alt="Your face">`;
+    circle.innerHTML = `<img src="${lists._face}?t=${Date.now()}" alt="Your face">`;
     document.querySelector('.avatar-hint').textContent = 'Click to change';
   }
-})();
+}
 
 // ---- MODAL / ADD ITEM ----
 function openModal() {
@@ -391,7 +431,7 @@ function luminance(hex) {
   return 0.299*r + 0.587*g + 0.114*b;
 }
 
-function saveItem() {
+async function saveItem() {
   const name = document.getElementById('itemName').value.trim();
   if (!name) { alert('Please enter a name'); return; }
 
@@ -401,15 +441,19 @@ function saveItem() {
   const tags = getChecked(document.querySelector('.check-group'));
   const seasons = getChecked(document.getElementById('seasonChecks'));
 
-  // Check for photo
-  const preview = document.getElementById('photoPreview');
-  const photoData = preview.style.display !== 'none' ? preview.src : null;
+  // Upload photo to server if provided
+  const fileInput = document.getElementById('itemPhoto');
+  let photoPath = null;
+  if (fileInput.files && fileInput.files[0]) {
+    photoPath = await uploadFile(fileInput.files[0]);
+  }
 
-  const item = { name, color, text: textColor, icon: categoryIcons[category], tags, seasons, photo: photoData };
+  const item = { name, color, text: textColor, icon: categoryIcons[category], tags, seasons, photo: photoPath };
 
   lists[category].push(item);
   idx[category] = lists[category].length - 1; // jump to new item
 
+  await saveWardrobe();
   closeModal();
   render();
 }
@@ -460,8 +504,12 @@ render = function() {
   updateSuggestion();
 };
 
-// Init
-render();
+// ---- INIT ----
+(async function init() {
+  await loadWardrobe();
+  restoreFace();
+  render();
+})();
 </script>
 </body>
 </html>
