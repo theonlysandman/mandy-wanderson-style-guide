@@ -22,7 +22,7 @@
   }
   #outfit { display: flex; flex-direction: column; gap: .6rem; }
   .outfit-slot {
-    display: flex; align-items: center; gap: 1rem; position: relative;
+    display: flex; align-items: center; justify-content: center; gap: 1rem; position: relative;
   }
   .outfit-slot label {
     width: 90px; flex-shrink: 0; font-size: .75rem; text-transform: uppercase;
@@ -39,11 +39,11 @@
   .item-display .icon { font-size: 1.8rem; }
   .item-display .name { font-size: .85rem; }
 
-  /* Category-specific shapes */
-  .slot-outer .item-display  { height: 56px; border-radius: 10px 10px 6px 6px; }
-  .slot-top .item-display     { height: 90px; border-radius: 8px; }
-  .slot-bottom .item-display  { height: 120px; border-radius: 6px 6px 8px 8px; }
-  .slot-shoes .item-display   { height: 54px; border-radius: 12px; }
+  /* Category-specific shapes – person silhouette */
+  .slot-outer .item-display  { height: 60px;  width: 260px; flex: none; border-radius: 10px 10px 6px 6px; }
+  .slot-top .item-display     { height: 100px; width: 230px; flex: none; border-radius: 8px; }
+  .slot-bottom .item-display  { height: 220px; width: 180px; flex: none; border-radius: 6px 6px 8px 8px; }
+  .slot-shoes .item-display   { height: 50px;  width: 160px; flex: none; border-radius: 12px; }
 
   /* Nav arrows */
   .nav-arrows { display: flex; flex-direction: column; gap: .3rem; flex-shrink: 0; }
@@ -273,6 +273,7 @@ async function saveWardrobe() {
 }
 
 async function loadWardrobe() {
+  let face = null;
   try {
     const res = await fetch('/api/wardrobe');
     const data = await res.json();
@@ -281,7 +282,7 @@ async function loadWardrobe() {
       bottoms = data.bottom;
       shoes = data.shoes;
       outerwear = data.outer;
-      lists._face = data.face || null;
+      face = data.face || null;
     } else {
       loadDefaults();
     }
@@ -289,6 +290,7 @@ async function loadWardrobe() {
     loadDefaults();
   }
   lists = { top: tops, bottom: bottoms, shoes: shoes, outer: outerwear };
+  lists._face = face;
 }
 
 function loadDefaults() {
@@ -356,7 +358,7 @@ function updateSuggestion() {
   // Simple gap analysis
   const allItems = [...tops, ...bottoms, ...shoes, ...outerwear];
   const seasonCounts = { spring: 0, summer: 0, fall: 0, winter: 0 };
-  allItems.forEach(i => i.seasons.forEach(s => seasonCounts[s]++));
+  allItems.forEach(i => (i.seasons || []).forEach(s => seasonCounts[s]++));
   const weakest = Object.entries(seasonCounts).sort((a,b) => a[1]-b[1])[0];
 
   const tips = [
@@ -401,6 +403,10 @@ function openModal() {
   document.getElementById('itemName').value = '';
   document.getElementById('itemPhoto').value = '';
   document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('itemCategory').selectedIndex = 0;
+  document.getElementById('itemColor').value = '#4a90d9';
+  // Reset occasion checkboxes
+  document.querySelectorAll('#addModal .check-group input[type=checkbox]').forEach(cb => cb.checked = cb.defaultChecked);
 }
 function closeModal() {
   document.getElementById('addModal').classList.remove('open');
@@ -432,30 +438,36 @@ function luminance(hex) {
 }
 
 async function saveItem() {
-  const name = document.getElementById('itemName').value.trim();
-  if (!name) { alert('Please enter a name'); return; }
+  try {
+    const name = document.getElementById('itemName').value.trim();
+    if (!name) { alert('Please enter a name'); return; }
 
-  const category = document.getElementById('itemCategory').value;
-  const color = document.getElementById('itemColor').value;
-  const textColor = luminance(color) > 0.5 ? '#333' : '#fff';
-  const tags = getChecked(document.querySelector('.check-group'));
-  const seasons = getChecked(document.getElementById('seasonChecks'));
+    const category = document.getElementById('itemCategory').value;
+    const color = document.getElementById('itemColor').value;
+    const textColor = luminance(color) > 0.5 ? '#333' : '#fff';
+    const occasionGroup = document.querySelector('#addModal .check-group');
+    const tags = getChecked(occasionGroup);
+    const seasons = getChecked(document.getElementById('seasonChecks'));
 
-  // Upload photo to server if provided
-  const fileInput = document.getElementById('itemPhoto');
-  let photoPath = null;
-  if (fileInput.files && fileInput.files[0]) {
-    photoPath = await uploadFile(fileInput.files[0]);
+    // Upload photo to server if provided
+    const fileInput = document.getElementById('itemPhoto');
+    let photoPath = null;
+    if (fileInput.files && fileInput.files[0]) {
+      photoPath = await uploadFile(fileInput.files[0]);
+    }
+
+    const item = { name, color, text: textColor, icon: categoryIcons[category], tags, seasons: seasons.length ? seasons : ['spring','summer','fall','winter'], photo: photoPath };
+
+    lists[category].push(item);
+    idx[category] = lists[category].length - 1; // jump to new item
+
+    await saveWardrobe();
+    closeModal();
+    render();
+  } catch(err) {
+    console.error('Error adding item:', err);
+    alert('Error adding item: ' + err.message);
   }
-
-  const item = { name, color, text: textColor, icon: categoryIcons[category], tags, seasons, photo: photoPath };
-
-  lists[category].push(item);
-  idx[category] = lists[category].length - 1; // jump to new item
-
-  await saveWardrobe();
-  closeModal();
-  render();
 }
 
 // ---- RENDER WITH PHOTO SUPPORT ----
